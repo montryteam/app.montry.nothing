@@ -2,7 +2,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lambo AI - Nothing App</title><style>
+<title>Lambo AI - Nothing App</title>
+<style>
   :root {
     --bg: #000;
     --white: #fff;
@@ -11,19 +12,17 @@
     --radius: 26px;
     --shadow: 0 8px 28px rgba(0,0,0,0.6);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--white); font-family: 'Roboto', sans-serif; padding: 18px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
   h1 { font-size: 2.6rem; margin-top: 10px; font-weight: 700; text-align: center; }
   p.subtitle { color: #ccc; font-size: 1rem; text-align: center; margin-bottom: 18px; }
   p.notice { font-size: 0.95rem; color: #e5e5e5; margin-bottom: 18px; text-align: center; }
   p.notice a { color: var(--white); font-weight: bold; text-decoration: underline; }
-
   .card { background: var(--surface); border-radius: var(--radius); padding: 18px; width: 100%; max-width: 450px; margin-bottom: 18px; box-shadow: var(--shadow); }
   input, button { width: 100%; padding: 16px; border-radius: var(--radius); border: none; font-size: 16px; }
   input { background: var(--surface-light); color: var(--white); }
   button { background: var(--white); color: #000; font-weight: 700; cursor: pointer; }
-  #output { background: #111; min-height: 140px; border-radius: var(--radius); padding: 14px; font-size: 15px; position: relative; overflow: hidden; }
+  #lamboOutput, #googleOutput { background: #111; min-height: 120px; border-radius: var(--radius); padding: 14px; font-size: 15px; position: relative; overflow: hidden; margin-bottom: 12px; }
   #cat { position: absolute; bottom: 6px; right: 6px; width: 42px; height: 42px; }
   .history-item { color: var(--white); text-decoration: underline; cursor: pointer; margin: 6px 0; }
   #apiPopup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; }
@@ -31,16 +30,19 @@
   #apiBtn { background: #fff; color: #000; width: 48px; height: 48px; border-radius: 50%; font-size: 20px; font-weight: 900; display: flex; justify-content: center; align-items: center; cursor: pointer; position: fixed; bottom: 20px; right: 20px; box-shadow: var(--shadow); }
   .steps { font-size: 0.9rem; color: #ccc; margin-top: 6px; }
   @media(max-width:480px){ h1{ font-size:2.2rem; } p.subtitle{ font-size:0.9rem; } p.notice{ font-size:0.8rem; } }
-</style></head>
-<body><h1>Lambo</h1>
+</style>
+</head>
+<body>
+<h1>Lambo</h1>
 <p class="subtitle">Your Friend and AI assistant.</p>
-<p class="notice">This version was developed for the <a href="#" onclick="openNothing()">Nothing</a> App.</p><div class="card">
+<p class="notice">This version was developed for the <a href="#" onclick="openNothing()">Nothing</a> App.</p>
+<div class="card">
   <input id="searchInput" type="text" placeholder="Ask Lambo or enter a URL..." />
   <button onclick="runSearch()">Search</button>
-</div><div class="card" id="output">
-  Lambo is waiting for you...
-  <img id="cat" src="https://i.imgur.com/3oV1gOi.png">
-</div><div class="card" id="historyContainer"></div><!-- Google CSE --><script async src="https://cse.google.com/cse.js?cx=f015436e565c94c8d"></script><div class="gcse-search"></div><!-- API BUTTON --><div id="apiBtn" onclick="openApiPopup()">⚙</div>
+</div>
+<div class="card" id="lamboOutput">Lambo is waiting for you...<img id="cat" src="https://i.imgur.com/3oV1gOi.png"></div>
+<div class="card" id="googleOutput">Google results will appear here...</div>
+<div class="card" id="historyContainer"></div><div id="apiBtn" onclick="openApiPopup()">⚙</div>
 <div id="apiPopup">
   <div id="apiBox">
     <h3 style="margin-bottom:6px;">API Key</h3>
@@ -55,14 +57,13 @@
       4. Paste the key above and save
     </div>
   </div>
-</div><script>
+</div><script async src="https://cse.google.com/cse.js?cx=f015436e565c94c8d"></script><script>
 const apiKeyInput = document.getElementById('apiKeyInput');
 apiKeyInput.value = localStorage.getItem('lambo_api_key') || '';
 const popup = document.getElementById('apiPopup');
 function openApiPopup(){ popup.style.display = 'flex'; }
 function closeApiPopup(){ popup.style.display = 'none'; }
 function openNothing(){ window.location.href = "https://montryteam.github.io/app.montry.nothing/"; }
-
 let history = [];
 function addToHistory(q){ history.push(q); document.getElementById('historyContainer').innerHTML = history.map(h => `<div class='history-item' onclick='loadHistory("${h}")'>${h}</div>`).join(''); }
 function loadHistory(q){ document.getElementById('searchInput').value = q; runSearch(); }
@@ -71,25 +72,31 @@ function isUrl(t){ return /^https?:\/\//i.test(t) || (t.includes('.') && !t.incl
 async function runSearch(){
   const q = document.getElementById('searchInput').value.trim();
   const key = localStorage.getItem('lambo_api_key');
-  const out = document.getElementById('output');
-  if(!key){ out.textContent = "Please provide your API key."; return; }
-  if(!q){ out.textContent = "Please type something."; return; }
+  const lamboOut = document.getElementById('lamboOutput');
+  const googleOut = document.getElementById('googleOutput');
+  if(!key){ lamboOut.textContent = "Please provide your API key."; return; }
+  if(!q){ lamboOut.textContent = "Please type something."; return; }
   addToHistory(q);
   if(isUrl(q)) return window.location.href = q.startsWith('http') ? q : 'https://' + q;
+
+  // Lambo AI Response
   if(q.toLowerCase().includes("what ai") || q.toLowerCase().includes("which ai")){
-    out.textContent = "I am Lambo, a monochrome AI cat built on Gemini. Developed by Montry.";
-    return;
+    lamboOut.textContent = "I am Lambo, a monochrome AI cat built on Gemini. Developed by Montry.";
+  } else {
+    lamboOut.textContent = "Lambo is thinking...";
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${key}`;
+    try{
+      const body = { contents:[{parts:[{text:q}]}] };
+      const res = await fetch(endpoint,{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+      const data = await res.json();
+      let txt = data.candidates ? data.candidates[0].content.parts[0].text : JSON.stringify(data);
+      lamboOut.textContent = "";
+      for(let i=0;i<txt.length;i++){ lamboOut.textContent += txt[i]; await new Promise(r=>setTimeout(r,22)); }
+    } catch(e){ lamboOut.textContent = "Error: " + e.message; }
   }
-  out.textContent = "Lambo is thinking...";
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${key}`;
-  try{
-    const body = { contents:[{parts:[{text:q}]}] };
-    const res = await fetch(endpoint,{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-    const data = await res.json();
-    let txt = data.candidates ? data.candidates[0].content.parts[0].text : JSON.stringify(data);
-    out.textContent = "";
-    for(let i=0;i<txt.length;i++){ out.textContent += txt[i]; await new Promise(r=>setTimeout(r,22)); }
-  } catch(e){ out.textContent = "Error: " + e.message; }
+
+  // Google CSE Results
+  googleOut.innerHTML = `<div class="gcse-search" data-query="${q}"></div>`;
 }
 </script></body>
 </html>
