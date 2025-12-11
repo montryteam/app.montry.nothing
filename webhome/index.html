@@ -1,246 +1,228 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lambo AI - Nothing App 🐾</title>
-
-<style>
+<title>Lambo AI - Nothing App</title><style>
   :root {
-    --primary: #00e5ff;
-    --background: #000;
+    --bg: #000;
+    --white: #fff;
     --surface: #111;
-    --on-surface: #fff;
-    --card-radius: 18px;
-    --padding: 16px;
-    --shadow: 0 6px 20px rgba(0,0,0,0.5);
+    --surface-light: #222;
+    --radius: 26px;
+    --shadow: 0 8px 28px rgba(0,0,0,0.6);
   }
 
-  * { box-sizing: border-box; margin:0; padding:0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: var(--background);
-    color: var(--on-surface);
-    font-family: 'Roboto', sans-serif;
+    background: var(--bg);
+    color: var(--white);
+    font-family: "Roboto", sans-serif;
+    padding: 18px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 12px;
     min-height: 100vh;
   }
 
   h1 {
-    font-size: 2.5rem;
+    font-size: 2.6rem;
+    margin-top: 10px;
     font-weight: 700;
     text-align: center;
-    margin-top: 12px;
   }
 
   p.subtitle {
-    color: #9aa0a6;
-    margin-bottom: 16px;
-    text-align: center;
+    color: #ccc;
     font-size: 1rem;
+    text-align: center;
+    margin-bottom: 18px;
   }
 
   p.notice {
-    font-size: 0.9rem;
-    color: #ccc;
+    font-size: 0.95rem;
+    color: #e5e5e5;
+    margin-bottom: 18px;
     text-align: center;
-    margin-bottom: 12px;
+  }
+
+  p.notice a {
+    color: var(--white);
+    font-weight: bold;
+    text-decoration: underline;
   }
 
   .card {
     background: var(--surface);
-    border-radius: var(--card-radius);
-    padding: var(--padding);
+    border-radius: var(--radius);
+    padding: 18px;
     width: 100%;
     max-width: 450px;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
     box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
   }
 
   input, button {
-    font-size: 16px;
-    padding: 14px;
-    border-radius: 12px;
-    border: none;
     width: 100%;
+    padding: 16px;
+    border-radius: var(--radius);
+    border: none;
+    font-size: 16px;
   }
 
   input {
-    background: #222;
-    color: var(--on-surface);
+    background: var(--surface-light);
+    color: var(--white);
   }
 
   button {
-    background: var(--primary);
+    background: var(--white);
     color: #000;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: 0.2s;
-  }
-
-  button:hover {
-    background: #7affc8;
   }
 
   #output {
-    min-height: 100px;
     background: #111;
-    padding: 12px;
-    border-radius: 14px;
+    min-height: 140px;
+    border-radius: var(--radius);
+    padding: 14px;
     font-size: 15px;
-    line-height: 1.5;
     position: relative;
     overflow: hidden;
   }
 
   #cat {
     position: absolute;
-    bottom: 4px;
-    right: 4px;
-    width: 40px;
-    height: 40px;
-    transition: transform 0.3s ease;
+    bottom: 6px;
+    right: 6px;
+    width: 42px;
+    height: 42px;
   }
 
   .history-item {
-    color: var(--primary);
-    cursor: pointer;
+    color: var(--white);
     text-decoration: underline;
-    margin-bottom: 6px;
+    cursor: pointer;
+    margin: 6px 0;
   }
 
-  @keyframes typing {
-    from { width: 0 }
-    to { width: 100% }
+  /* API Popup */
+  #apiPopup {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
   }
 
-  @media(max-width:480px){
-    h1{ font-size:2.2rem; }
-    p.subtitle{ font-size:0.9rem; }
-    p.notice{ font-size:0.8rem; }
+  #apiBox {
+    background: var(--surface);
+    padding: 22px;
+    width: 90%;
+    max-width: 350px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
-</style>
-</head>
 
-<body>
-
-<h1>Lambo 🐾</h1>
-<p class="subtitle">Your friendly AI cat built on Gemini. Developed by Montry. Lambo is here to help you!</p>
-<p class="notice">This version of Lambo is specially made for the <strong>Nothing App</strong>. Visit: <a href="https://montryteam.github.io/app.montry.nothing/" style="color: var(--primary);" target="_blank">https://montryteam.github.io/app.montry.nothing/</a></p>
-
-<div class="card">
-  <input id="apiKeyInput" type="text" placeholder="Enter your Gemini API Key" />
-  <button onclick="saveApiKey()">Save API Key</button>
-</div>
-
-<div class="card">
+  #apiBtn {
+    background: #fff;
+    color: #000;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: 900;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    box-shadow: var(--shadow);
+  }
+</style></head><body>
+<h1>Lambo</h1>
+<p class="subtitle">Your monochrome AI cat assistant.</p>
+<p class="notice">This version was developed for the <a href="#" onclick="openNothing()">Nothing App</a>.</p><div class="card">
   <input id="searchInput" type="text" placeholder="Ask Lambo or enter a URL..." />
   <button onclick="runSearch()">Search</button>
-</div>
-
-<div class="card" id="output">
-  Lambo is waiting for your question... 🐾
-  <img id="cat" src="https://i.imgur.com/3oV1gOi.png" alt="Lambo Cat">
-</div>
-
-<div class="card" id="historyContainer"></div>
-
-<script>
+</div><div class="card" id="output">
+  Lambo is waiting for you...
+  <img id="cat" src="https://i.imgur.com/3oV1gOi.png">
+</div><div class="card" id="historyContainer"></div><!-- API BUTTON --><div id="apiBtn" onclick="openApiPopup()">⚙</div><!-- API POPUP --><div id="apiPopup">
+  <div id="apiBox">
+    <h3 style="margin-bottom:6px;">API Key</h3>
+    <input id="apiKeyInput" type="text" placeholder="Enter your Gemini API Key" />
+    <button onclick="saveApiKey()">Save</button>
+    <button onclick="closeApiPopup()" style="background:#444;color:white;">Close</button>
+  </div>
+</div><script>
 const apiKeyInput = document.getElementById('apiKeyInput');
 apiKeyInput.value = localStorage.getItem('lambo_api_key') || '';
+const popup = document.getElementById('apiPopup');
 
-const outputEl = document.getElementById('output');
-const historyContainer = document.getElementById('historyContainer');
-const cat = document.getElementById('cat');
-let history = [];
+function openApiPopup(){ popup.style.display = 'flex'; }
+function closeApiPopup(){ popup.style.display = 'none'; }
+function openNothing(){ window.location.href = "https://montryteam.github.io/app.montry.nothing/"; }
 
 function saveApiKey(){
   const key = apiKeyInput.value.trim();
   if(!key){ alert("API key cannot be empty."); return; }
   localStorage.setItem('lambo_api_key', key);
-  alert("API key saved successfully!");
+  popup.style.display = 'none';
 }
 
-function addToHistory(query){
-  history.push(query);
-  historyContainer.innerHTML = "<strong>History:</strong><br>" +
-    history.map(q => `<div class="history-item" onclick="loadHistory('${q.replace(/'/g,'')}')">${q}</div>`).join('');
+let history = [];
+function addToHistory(q){
+  history.push(q);
+  document.getElementById('historyContainer').innerHTML = history.map(h => `<div class='history-item' onclick='loadHistory("${h}")'>${h}</div>`).join('');
 }
+function loadHistory(q){ document.getElementById('searchInput').value = q; runSearch(); }
 
-function loadHistory(q){
-  document.getElementById('searchInput').value = q;
-  runSearch();
-}
-
-function isUrl(text){
-  return /^https?:\/\//i.test(text) || (text.includes('.') && !text.includes(' '));
-}
-
-function sleep(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
+function isUrl(t){ return /^https?:\/\//i.test(t) || (t.includes('.') && !t.includes(' ')); }
 
 async function runSearch(){
-  const query = document.getElementById('searchInput').value.trim();
-  const apiKey = localStorage.getItem('lambo_api_key');
+  const q = document.getElementById('searchInput').value.trim();
+  const key = localStorage.getItem('lambo_api_key');
+  const out = document.getElementById('output');
 
-  if(!apiKey){ outputEl.textContent = "Please enter your API Key first."; return; }
-  if(!query){ outputEl.textContent = "Please enter a question or URL."; return; }
+  if(!key){ out.textContent = "Please provide your API key."; return; }
+  if(!q){ out.textContent = "Please type something."; return; }
 
-  addToHistory(query);
+  addToHistory(q);
 
-  if(isUrl(query)){
-    let url = query.startsWith('http') ? query : 'https://' + query;
-    window.location.href = url;
+  if(isUrl(q)) return window.location.href = q.startsWith('http') ? q : 'https://' + q;
+
+  if(q.toLowerCase().includes("what ai") || q.toLowerCase().includes("which ai")){
+    out.textContent = "I am Lambo, a monochrome AI cat built on Gemini. Developed by Montry.";
     return;
   }
 
-  const aiQuestions = ["which ai","what ai","who is ai","tell me about ai","which artificial intelligence"];
-  if(aiQuestions.some(q => query.toLowerCase().includes(q))){
-    outputEl.textContent = "Hello! I am Lambo, a friendly AI cat built on Gemini. I'm here to help you! Developed by Montry.";
-    return;
-  }
+  out.textContent = "Lambo is thinking...";
 
-  outputEl.textContent = "";
-  cat.style.transform = "translateY(-5px)";
-
-  outputEl.textContent = "Lambo is thinking... 🐾";
-
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`;
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${key}`;
 
   try{
-    const body = { contents:[{parts:[{text:query}]}] };
-    const res = await fetch(endpoint,{
-      method:'POST',
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify(body)
-    });
-
+    const body = { contents:[{parts:[{text:q}]}] };
+    const res = await fetch(endpoint,{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
     const data = await res.json();
-    let responseText = "";
 
-    if(data.candidates){
-      responseText = data.candidates[0].content.parts[0].text;
-    } else { responseText = "Error: "+JSON.stringify(data); }
+    let txt = data.candidates ? data.candidates[0].content.parts[0].text : JSON.stringify(data);
 
-    outputEl.textContent = "";
-    for(let i=0;i<responseText.length;i++){
-      outputEl.textContent += responseText[i];
-      await sleep(25);
+    out.textContent = "";
+    for(let i=0;i<txt.length;i++){
+      out.textContent += txt[i];
+      await new Promise(r => setTimeout(r, 22));
     }
-
-    cat.style.transform = "translateY(0)";
-
-  } catch(err){
-    outputEl.textContent = "Request failed: " + err.message;
-    cat.style.transform = "translateY(0)";
   }
+  catch(e){ out.textContent = "Error: " + e.message; }
 }
-</script>
-
-</body>
+</script></body>
 </html>
