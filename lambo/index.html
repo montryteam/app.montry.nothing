@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lambo Search — Nothing App</title>
+<style>
+:root{
+    --bg:#000; /* Strictly Black Background */
+    --fg:#fff;
+    --surface:#111;
+    --radius:26px;
+    --shadow:0 12px 36px rgba(0,0,0,0.6);
+    --button-bg:#ffffff; /* Default button color, changeable by user */
+    --button-fg:#000000; /* Default button text color */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:Inter,system-ui,Arial,sans-serif;padding:18px;display:flex;flex-direction:column;align-items:center;gap:12px;overflow-y:scroll;}
+
+/* --- LAMBO LOGO STYLES --- */
+.logo{
+    font-weight:800;
+    font-size:34px;
+    line-height:1;
+    text-align:center;
+    width:100%;
+    max-width:420px;
+    /* Default Gradient: Blue to Purple */
+    background:linear-gradient(90deg,#6a00ff,#009dff);
+    background-size:300% 300%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:logoIdle 6s ease-in-out infinite;
+    border-radius:20px;
+    padding:6px 0;
+}
+@keyframes logoIdle{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+/* Thinking State Gradient: Rainbow/All Colors */
+@keyframes logoThink{
+    0%{background-position:0% 50%; background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); }
+    50%{background-position:100% 50%; background-image: linear-gradient(90deg, violet, indigo, blue, green, yellow, orange, red); }
+    100%{background-position:0% 50%; background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); }
+}
+/* --- END LOGO STYLES --- */
+
+.subtitle{color:#bfbfbf;font-size:14px;text-align:center;max-width:420px;}
+.byline{color:#a8a8a8;font-size:13px;text-align:center;margin-top:4px;}
+.card{width:100%;max-width:420px;background:var(--surface);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);}
+.row{display:flex;gap:10px;align-items:center;}
+input[type="text"]{flex:1;background:#0b0b0b;color:var(--fg);border-radius:28px;padding:14px;border:1px solid rgba(255,255,255,0.03);font-size:15px;}
+button.btn{background:var(--button-bg);color:var(--button-fg);padding:12px 14px;border-radius:28px;border:0;font-weight:700;font-size:14px;cursor:pointer;transition:background 0.2s, color 0.2s; min-width: 48px;}
+.result{width:100%;max-width:420px;background:var(--surface);border-radius:var(--radius);padding:12px;box-shadow:var(--shadow);min-height:110px;overflow:auto;display:block;}
+.sectionTitle{color:#dcdcdc;font-weight:700;margin-bottom:8px;font-size:13px;display:flex;align-items:center;gap:8px;}
+.lamboText{font-size:15px;line-height:1.5;color:#eaeaea;white-space:pre-wrap;}
+.lamboText strong {color: #aaffaa;}
+.historyList{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.historyItem{color:#fff;text-decoration:underline;cursor:pointer;font-size:13px;opacity:0.95}
+.settingsFloat{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:14px;background:var(--button-bg);color:var(--button-fg);display:flex;align-items:center;justify-content:center;font-weight:800;box-shadow:0 10px 30px rgba(0,0,0,0.6);cursor:pointer;z-index:60;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:70;}
+.settingsBox{width:92%;max-width:420px;background:var(--surface);border-radius:20px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;max-height:80vh;overflow-y:auto;}
+.label{font-size:13px;color:#cfcfcf;font-weight:700;margin-bottom:6px;}
+.controlRow{display:flex;gap:8px;align-items:center;}
+select,input[type="text"],input[type="color"]{padding:10px;border-radius:12px;border:none;background:#0a0a0a;color:#fff;width:100%;}
+.muted{color:#a7a7a7;font-size:13px}
+.typingCursor{display:inline-block;width:8px;height:16px;background:#fff;margin-left:6px;opacity:0.9;animation:blink 1s step-end infinite;vertical-align:middle;}
+@keyframes blink{50%{opacity:0}}
+.key-input-group input{margin-top:8px;}
+.feature-row{display:flex;gap:8px;margin-top:10px;}
+.feature-btn{flex:1;background:#222;color:var(--fg);padding:10px;border-radius:12px;border:1px solid #333;font-weight:600;font-size:13px;cursor:pointer;transition:background 0.2s;}
+.feature-btn.multi{background:#6a00ff; color:#fff;}
+@media (max-width:420px){.logo{font-size:28px}.subtitle{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="logo" id="logo">LAMBO</div>
+<div class="subtitle">your friend & smart AI assistant 😺</div>
+<div class="byline">developed by <strong>Montry</strong> for <a href="https://montryteam.github.io/app.montry.nothing/" target="_blank" style="color:#9ad6ff;text-decoration:underline">Nothing</a></div>
+
+<div class="card">
+    <div class="row">
+        <input id="q" type="text" placeholder="ask lambo, prompt for image, or upload file... ✨" aria-label="search input" />
+        <button class="btn" id="goBtn">GO</button>
+    </div>
+    <div class="feature-row">
+        <button class="feature-btn multi" id="multiQueryBtn" title="Query All Enabled Models & Select Best Response">⚡ Multi-Query</button>
+        <button class="feature-btn" id="imageGenBtn" title="Generate Image">📷 Image</button>
+        <button class="feature-btn" id="uploadFileBtn" title="Upload File for Analysis">📎 File</button>
+        <input type="file" id="fileInput" style="display:none;" accept="*/*">
+    </div>
+</div>
+
+<div class="result" id="lamboResult">
+    <div class="sectionTitle">LAMBO vibe — AI answer</div>
+    <div class="lamboText" id="lamboText">Lambo is chillin' — drop a question or link above 😼 <span class="typingCursor"></span></div>
+</div>
+
+<div class="card" style="display:none;" id="fileAnalysisResult">
+    <div class="sectionTitle">FILE ANALYSIS 📂</div>
+    <div class="lamboText" id="fileAnalysisText">File analysis pending...</div>
+</div>
+
+<div class="card">
+    <div class="label">Search history ⏱️</div>
+    <div id="history" class="historyList muted">no history yet.</div>
+</div>
+
+<div class="settingsFloat" id="settingsBtn" title="settings">⚙</div>
+
+<div class="overlay" id="overlay">
+    <div class="settingsBox" role="dialog" aria-modal="true">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <div style="font-weight:800;font-size:18px;">SETTINGS ⚡</div>
+            <div style="font-size:12px;color:#9d9d9d">Multi-Model Config</div>
+        </div>
+
+        <div>
+            <div class="label">Primary AI Model (for 'GO' button) 🧠</div>
+            <select id="aiModelSelect">
+                <option value="gemini">Google Gemini (Chat/Multi-Modal)</option>
+                <option value="chatgpt">OpenAI ChatGPT (Chat)</option>
+                <option value="claude">Anthropic Claude (Chat)</option>
+                <option value="cohere">Cohere Command (Chat)</option>
+                <option value="dalle">OpenAI DALL-E (Image Gen)</option>
+                <option value="stable">Stability Stable Diffusion (Image Gen)</option>
+            </select>
+        </div>
+        
+        <div class="key-input-group">
+            <div class="label">Enabled Models for Multi-Query</div>
+            <div class="muted" style="margin-bottom:8px;">Check models to include in **Multi-Query** mode.</div>
+            <div id="modelCheckboxes" style="display:flex;flex-direction:column;gap:6px;">
+                </div>
+        </div>
+
+        <div class="key-input-group">
+            <div class="label">API Keys Configuration 🔐</div>
+            <input id="geminiApiKey" type="text" placeholder="Gemini API Key" data-model="gemini" />
+            <input id="chatgptApiKey" type="text" placeholder="ChatGPT/DALL-E API Key (OpenAI)" data-model="chatgpt"/>
+            <input id="claudeApiKey" type="text" placeholder="Claude API Key (Anthropic)" data-model="claude"/>
+            <input id="cohereApiKey" type="text" placeholder="Cohere API Key" data-model="cohere"/>
+            <input id="stableApiKey" type="text" placeholder="Stable Diffusion API Key (e.g., Stability AI)" data-model="stable"/>
+        </div>
+
+        <div>
+            <div class="label">Button color 🎨</div>
+            <div class="controlRow">
+                <input id="btnColor" type="color" value="#ffffff" style="width:100px;"/>
+                <div style="flex:1"><div class="muted" style="font-size:13px">Changes GO/Settings button color</div></div>
+            </div>
+        </div>
+        
+        <div style="display:flex;gap:8px;">
+            <button class="btn" id="resetBtn" style="flex:1;background:#222;color:#fff">Reset defaults</button>
+            <button class="btn" id="clearHistoryBtn" style="flex:1;background:#222;color:#fff">Clear history</button>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn" id="saveSettingsBtn" style="width:120px">Save</button>
+            <button class="btn" id="closeSettingsBtn" style="background:#222;color:#fff;width:120px">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Local Storage Keys
+const LS = {
+    model: 'LAMBO_CORE_MODEL',
+    btnColor: 'LAMBO_BTN_COLOR',
+    enabledModels: 'LAMBO_ENABLED_MODELS',
+    apiKeys: 'LAMBO_API_KEYS',
+    history: 'LAMBO_HISTORY'
+};
+
+const DEFAULTS = {
+    model: 'gemini',
+    btnColor: '#ffffff',
+    enabledModels: ['gemini']
+};
+
+// Global State
+let CURRENT_MODEL = localStorage.getItem(LS.model) || DEFAULTS.model;
+let BTN_COLOR = localStorage.getItem(LS.btnColor) || DEFAULTS.btnColor;
+let ENABLED_MODELS = JSON.parse(localStorage.getItem(LS.enabledModels)) || DEFAULTS.enabledModels;
+let API_KEYS = JSON.parse(localStorage.getItem(LS.apiKeys)) || {};
+let HISTORY = JSON.parse(localStorage.getItem(LS.history)||'[]');
+
+// Model Definitions
+const ALL_MODELS = [
+    { id: 'gemini', name: 'Gemini', type: 'chat', keyElId: 'geminiApiKey' },
+    { id: 'chatgpt', name: 'ChatGPT', type: 'chat', keyElId: 'chatgptApiKey' },
+    { id: 'claude', name: 'Claude', type: 'chat', keyElId: 'claudeApiKey' },
+    { id: 'cohere', name: 'Cohere', type: 'chat', keyElId: 'cohereApiKey' },
+    { id: 'dalle', name: 'DALL-E', type: 'image', keyElId: 'chatgptApiKey' },
+    { id: 'stable', name: 'Stable Diffusion', type: 'image', keyElId: 'stableApiKey' }
+];
+
+// DOM Elements
+const qEl = document.getElementById('q');
+const goBtn = document.getElementById('goBtn');
+const lamboTextEl = document.getElementById('lamboText');
+const historyEl = document.getElementById('history');
+const settingsBtn = document.getElementById('settingsBtn');
+const overlay = document.getElementById('overlay');
+const aiModelSelect = document.getElementById('aiModelSelect');
+const btnColorInput = document.getElementById('btnColor');
+const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+const resetBtn = document.getElementById('resetBtn');
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+const logoEl = document.getElementById('logo');
+const uploadFileBtn = document.getElementById('uploadFileBtn');
+const fileInput = document.getElementById('fileInput');
+const imageGenBtn = document.getElementById('imageGenBtn');
+const multiQueryBtn = document.getElementById('multiQueryBtn');
+const modelCheckboxesEl = document.getElementById('modelCheckboxes');
+const fileAnalysisResult = document.getElementById('fileAnalysisResult');
+const fileAnalysisText = document.getElementById('fileAnalysisText');
+
+// --- Initialization ---
+
+function initSettings() {
+    aiModelSelect.value = CURRENT_MODEL;
+    btnColorInput.value = BTN_COLOR;
+    applyButtonColor(BTN_COLOR);
+
+    // Populate API Key fields and Checkboxes
+    ALL_MODELS.forEach(model => {
+        const keyEl = document.getElementById(model.keyElId);
+        if (keyEl) {
+            const storedKey = API_KEYS[model.id] || API_KEYS[model.keyElId.replace('ApiKey', '')];
+            keyEl.value = storedKey || '';
+        }
+        
+        // Create checkboxes for Multi-Query
+        const isChecked = ENABLED_MODELS.includes(model.id);
+        const keyInfo = model.keyElId === 'chatgptApiKey' ? ' (Uses OpenAI Key)' : '';
+        const html = `
+            <label style="display:flex;gap:10px;align-items:center;">
+                <input type="checkbox" id="check_${model.id}" value="${model.id}" ${isChecked ? 'checked' : ''}>
+                <span style="font-size:13px;">${model.name} (${model.type.toUpperCase()})${keyInfo}</span>
+            </label>
+        `;
+        modelCheckboxesEl.insertAdjacentHTML('beforeend', html);
+    });
+    renderHistory();
+}
+
+// --- Utility Functions ---
+
+function applyButtonColor(c) {
+    document.documentElement.style.setProperty('--button-bg', c);
+    const rgb = c.replace('#',''); 
+    const r=parseInt(rgb.substring(0,2),16),g=parseInt(rgb.substring(2,4),16),b=parseInt(rgb.substring(4,6),16); 
+    const lum=0.2126*r+0.7152*g+0.0722*b; 
+    const fg=lum>150?'#000':'#fff'; 
+    document.documentElement.style.setProperty('--button-fg',fg);
+    // Keep Multi-Query button color distinct (Blue/Purple gradient color)
+    multiQueryBtn.style.background = '#6a00ff';
+    multiQueryBtn.style.color = '#fff'; 
+}
+
+function setThinking(state) {
+    if (state) {
+        // Change logo animation to multi-color when thinking
+        logoEl.style.animation = 'logoThink 3s infinite';
+    } else {
+        // Revert logo animation to original blue/purple gradient when idle
+        logoEl.style.animation = 'logoIdle 6s ease-in-out infinite';
+        // Reset the background image explicitly to ensure it snaps back correctly from the complex 'logoThink' image
+        logoEl.style.backgroundImage = 'linear-gradient(90deg,#6a00ff,#009dff)'; 
+    }
+}
+
+function typeText(el, text, delay = 20) {
+    return new Promise(resolve => {
+        el.innerHTML = '';
+        let i = 0;
+        const cursor = document.createElement('span');
+        cursor.classList.add('typingCursor');
+        el.appendChild(cursor);
+        
+        function step() {
+            if (i < text.length) {
+                // Handle newlines
+                if (text.substring(i, i+2) === '\n\n') {
+                    el.insertBefore(document.createElement('br'), cursor);
+                    el.insertBefore(document.createElement('br'), cursor);
+                    i += 2;
+                } 
+                // Handle bolding (**Text**)
+                else if (text.substring(i, i+2) === '**') {
+                    const closingIndex = text.indexOf('**', i + 2);
+                    if (closingIndex !== -1) {
+                        const boldText = text.substring(i + 2, closingIndex);
+                        const strongEl = document.createElement('strong');
+                        strongEl.textContent = boldText;
+                        el.insertBefore(strongEl, cursor);
+                        i = closingIndex + 2;
+                    } else {
+                        el.insertBefore(document.createTextNode(text[i++]), cursor);
+                    }
+                } 
+                // Handle normal text
+                else {
+                    el.insertBefore(document.createTextNode(text[i++]), cursor);
+                }
+                
+                setTimeout(step, delay);
+            } else {
+                cursor.remove();
+                resolve();
+            }
+        }
+        step();
+    });
+}
+
+function toast(msg){
+    const el=document.createElement('div'); el.textContent=msg; 
+    el.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:#222;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.6);z-index:100;opacity:1;transition:opacity 0.5s;';
+    document.body.appendChild(el); 
+    setTimeout(()=>el.style.opacity='0',1600); 
+    setTimeout(()=>el.remove(),2200);
+}
+
+function pushHistory(q){
+    if(!q || q.startsWith('Image generation request') || q.startsWith('File selected') || q.startsWith('[Multi-Query]')) return; 
+    HISTORY.unshift({q,ts:Date.now()}); 
+    if(HISTORY.length>50)HISTORY.pop(); 
+    localStorage.setItem(LS.history,JSON.stringify(HISTORY)); 
+    renderHistory();
+}
+
+function renderHistory(){
+    if(!HISTORY||HISTORY.length===0){
+        historyEl.innerHTML='<div class="muted">no history yet ✨</div>'; 
+        return;
+    } 
+    historyEl.innerHTML=HISTORY.map(h=>`<div class="historyItem" onclick="repaste('${escapeForAttr(h.q)}')">${h.q}</div>`).join('');
+}
+
+function escapeForAttr(s){return s.replace(/'/g,"\\'").replace(/"/g,'\\"');}
+
+window.repaste = function(q){
+    qEl.value=q; 
+    mainAction(); 
+}
+
+// --- Settings Actions ---
+
+function saveSettings(){
+    CURRENT_MODEL = aiModelSelect.value;
+    BTN_COLOR = btnColorInput.value;
+    
+    API_KEYS = {};
+    document.querySelectorAll('[data-model]').forEach(input => {
+        API_KEYS[input.dataset.model] = input.value.trim();
+    });
+
+    ENABLED_MODELS = [];
+    document.querySelectorAll('#modelCheckboxes input[type="checkbox"]:checked').forEach(checkbox => {
+        ENABLED_MODELS.push(checkbox.value);
+    });
+
+    localStorage.setItem(LS.model, CURRENT_MODEL);
+    localStorage.setItem(LS.btnColor, BTN_COLOR);
+    localStorage.setItem(LS.apiKeys, JSON.stringify(API_KEYS));
+    localStorage.setItem(LS.enabledModels, JSON.stringify(ENABLED_MODELS));
+
+    applyButtonColor(BTN_COLOR);
+    overlay.style.display='none';
+    toast('Settings saved ✨');
+}
+
+function resetDefaults(){
+    aiModelSelect.value=DEFAULTS.model;
+    btnColorInput.value=DEFAULTS.btnColor;
+    
+    document.querySelectorAll('[data-model]').forEach(input => { input.value = ''; });
+    
+    localStorage.removeItem(LS.model);
+    localStorage.removeItem(LS.btnColor);
+    localStorage.removeItem(LS.apiKeys);
+    localStorage.removeItem(LS.enabledModels);
+    
+    CURRENT_MODEL=DEFAULTS.model;
+    BTN_COLOR=DEFAULTS.btnColor;
+    API_KEYS={};
+    ENABLED_MODELS=DEFAULTS.enabledModels;
+
+    document.querySelectorAll('#modelCheckboxes input[type="checkbox"]').forEach(cb => {
+        cb.checked = (cb.value === DEFAULTS.model);
+    });
+
+    applyButtonColor(BTN_COLOR);
+    toast('Settings reset 🔁');
+}
+
+function clearHistory(){
+    HISTORY=[]; 
+    localStorage.removeItem(LS.history); 
+    renderHistory(); 
+    toast('History cleared 🗑️');
+}
+
+// --- Main Actions ---
+
+async function mainAction() {
+    const q=qEl.value.trim(); 
+    if(!q) return;
+
+    fileAnalysisResult.style.display = 'none';
+
+    if(/^https?:\/\//i.test(q) || (q.includes('.') && !q.includes(' '))){ 
+        window.location.href = q.startsWith('http')?q:'https://'+q; 
+        return; 
+    } 
+    
+    await runSingleQuery(q, CURRENT_MODEL);
+}
+
+// --- Single Query Logic ---
+
+async function runSingleQuery(q, modelId) {
+    pushHistory(q);
+    setThinking(true);
+    
+    const model = ALL_MODELS.find(m => m.id === modelId);
+    const modelName = model ? model.name : 'AI Model';
+
+    if (model.type === 'image') {
+        await typeText(lamboTextEl, `**${modelName}** is an Image Model. Please use the **📷 Image** button for image generation.`);
+        setThinking(false);
+        return;
+    }
+
+    const apiKey = API_KEYS[model.id] || API_KEYS[model.keyElId.replace('ApiKey', '')];
+    
+    if (!apiKey) {
+        await typeText(lamboTextEl, `**${modelName}** failed: No API key for this model. Open Settings ⚙.`);
+        setThinking(false);
+        return;
+    }
+
+    lamboTextEl.textContent = `**${modelName}** is thinking... 🌈`;
+
+    try {
+        // Check if the user is asking about the model type
+        const identityKeywords = ['who are you', 'what are you', 'what model', 'what kind of ai', 'montry'];
+        const isIdentityQuery = identityKeywords.some(keyword => q.toLowerCase().includes(keyword));
+
+        let responseText;
+
+        if (isIdentityQuery) {
+ 
