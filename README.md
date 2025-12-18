@@ -1,5 +1,5 @@
 # Montry Nothing
-[Noting Icon](./assets/icon.png)
+![Noting Icon](./assets/icon.png)
 
 Nothing has never been this fun 😎
 
