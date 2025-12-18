@@ -1,6 +1,5 @@
 # Montry Nothing
-https://raw.githubusercontent.com/montryteam/nothing/refs/heads/main/assets/icon.png
-
+[Noting Icon](./assets/icon.png)
 
 Nothing has never been this fun 😎
 
