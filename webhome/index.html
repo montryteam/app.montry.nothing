@@ -1,137 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Lambo AI — Nothing App</title>
 
-<!-- Google Programmable Search (default enabled) -->
+<!-- Google Programmable Search (CSE) -->
 <script async src="https://cse.google.com/cse.js?cx=f015436e565c94c8d"></script>
 
 <style>
 :root{
   --bg:#0f1115;
   --primary:#e4e6eb;
-  --glass:rgba(255,255,255,0.08);
-  --blur:blur(18px);
-  --radius:28px;
+  --glass:rgba(255,255,255,.08);
+  --border:rgba(255,255,255,.14);
+  --radius:36px;
+  --blur:blur(22px);
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
+*{margin:0;padding:0;box-sizing:border-box}
+
 body{
   font-family:system-ui,-apple-system,Roboto,sans-serif;
+  min-height:100vh;
   background:var(--bg);
   color:var(--primary);
-  min-height:100vh;
   padding:16px;
   display:flex;
   flex-direction:column;
   align-items:center;
   background-size:cover;
   background-position:center;
-  transition:background-image 0.8s ease;
+  transition:background-image .8s ease;
 }
 
+/* ===== LAMBO TITLE ===== */
 h1{
-  font-size:2.6rem;
-  font-weight:800;
-  margin:10px 0 4px;
+  font-size:2.7rem;
+  font-weight:900;
   background:linear-gradient(120deg,#5da9ff,#a855f7);
+  background-size:200% 200%;
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-  animation:idleGradient 6s ease infinite;
+  animation:idle 6s ease infinite;
 }
-
 h1.thinking{
   background:linear-gradient(120deg,red,orange,yellow,green,cyan,blue,purple);
   background-size:400% 400%;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:thinkingGradient 2s linear infinite;
+  animation:think 1.6s linear infinite;
 }
 
-@keyframes idleGradient{
+@keyframes idle{
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
 }
-@keyframes thinkingGradient{
+@keyframes think{
   0%{background-position:0% 50%}
   100%{background-position:100% 50%}
 }
 
 .subtitle{
-  font-size:0.95rem;
-  opacity:.8;
-  margin-bottom:10px;
-  text-align:center;
+  font-size:.95rem;
+  opacity:.85;
+  margin-bottom:6px;
 }
 
 .notice{
-  font-size:0.85rem;
-  opacity:.85;
-  margin-bottom:18px;
-  text-align:center;
+  font-size:.8rem;
+  opacity:.8;
+  margin-bottom:16px;
 }
-.notice a{
-  color:var(--primary);
-  font-weight:600;
-  text-decoration:underline;
-}
+.notice a{color:white;font-weight:600}
 
+/* ===== GLASS CARDS ===== */
 .card{
   width:100%;
   max-width:480px;
   background:var(--glass);
   backdrop-filter:var(--blur);
   -webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--border);
   border-radius:var(--radius);
   padding:16px;
   margin-bottom:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,.45);
 }
 
+/* ===== INPUT / BUTTON ===== */
 input,button{
   width:100%;
   padding:16px;
+  border-radius:999px;
   border:none;
-  border-radius:34px;
   font-size:16px;
 }
-
 input{
-  background:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.14);
   color:white;
 }
-
 button{
   background:white;
   color:black;
-  font-weight:700;
+  font-weight:900;
   margin-top:10px;
 }
 
-#answers{
-  font-size:15px;
-  line-height:1.55;
-  white-space:pre-wrap;
-}
-
-.section-title{
-  font-size:0.9rem;
+/* ===== ANSWER ===== */
+.section{
+  font-size:.8rem;
   opacity:.7;
   margin-bottom:6px;
 }
-
-#history div{
-  font-size:0.9rem;
-  opacity:.85;
-  margin:4px 0;
-  cursor:pointer;
-  text-decoration:underline;
+#lamboAnswer{
+  font-size:15px;
+  line-height:1.65;
+  white-space:pre-wrap;
 }
 
-/* Floating settings button */
+/* ===== SHORTCUTS ===== */
+#shortcuts{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+}
+.shortcut{
+  flex:0 0 auto;
+  padding:12px 18px;
+  border-radius:22px;
+  background:rgba(255,255,255,.16);
+  font-size:.85rem;
+  white-space:nowrap;
+  cursor:pointer;
+}
+
+/* ===== GOOGLE ===== */
+#googleBox.hidden{display:none}
+.gcse-search{background:transparent!important}
+
+/* ===== HISTORY ===== */
+#history div{
+  font-size:.85rem;
+  text-decoration:underline;
+  margin:4px 0;
+  cursor:pointer;
+}
+
+/* ===== SETTINGS ===== */
 #settingsBtn{
   position:fixed;
   bottom:20px;
@@ -148,7 +162,6 @@ button{
   box-shadow:0 10px 30px rgba(0,0,0,.5);
 }
 
-/* Settings modal */
 #settings{
   position:fixed;
   inset:0;
@@ -157,6 +170,7 @@ button{
   align-items:center;
   justify-content:center;
 }
+
 #settingsBox{
   width:90%;
   max-width:360px;
@@ -165,225 +179,201 @@ button{
   border-radius:28px;
   padding:18px;
 }
-.settings-item{
-  font-size:0.9rem;
+
+.setting{
+  font-size:.9rem;
   margin:10px 0;
 }
-.settings-item label{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
 
-.toggle{
-  accent-color:white;
-}
-
-a{color:white}
-
-.gcse-search{
-  background:transparent !important;
-}
-
-/* hide google section when disabled */
-.hidden{display:none}
+.toggle{accent-color:white}
 </style>
 </head>
 
 <body>
 
 <h1 id="title">Lambo</h1>
-<div class="subtitle">your homie & AI assistant 🤍</div>
+<div class="subtitle">your chaotic AI cat bestie 🐾</div>
 <div class="notice">
-  Built by <b>Montry</b> for the <a href="https://montryteam.github.io/nothing/" target="_blank">Nothing</a> app
+Built by <b>Montry</b> for the <a href="https://montryteam.github.io/app.montry.nothing/" target="_blank">Nothing</a> app
 </div>
 
+<!-- SEARCH -->
 <div class="card">
-  <input id="query" placeholder="ask Lambo… or paste a link 👀">
-  <button onclick="run()">Go</button>
+  <input id="query" placeholder="ask Lambo… or paste a link 👀" />
+  <button onclick="run()">Go 🚀</button>
 </div>
 
+<!-- SHORTCUTS -->
 <div class="card">
-  <div class="section-title">🐾 Lambo Answers</div>
-  <div id="answers">Lambo chillin… waiting for you 😼</div>
+  <div class="section">⚡ Shortcuts</div>
+  <div id="shortcuts"></div>
 </div>
 
+<!-- LAMBO -->
+<div class="card">
+  <div class="section">🐾 Lambo Answers</div>
+  <div id="lamboAnswer">Lambo chillin… 😼</div>
+</div>
+
+<!-- GOOGLE -->
 <div class="card" id="googleBox">
-  <div class="section-title">🔎 Google Results</div>
+  <div class="section">🔎 Google Results</div>
   <div class="gcse-search"></div>
-  <button onclick="openGoogle()">Open in Google</button>
 </div>
 
+<!-- HISTORY -->
 <div class="card">
-  <div class="section-title">🕘 History</div>
+  <div class="section">🕘 History</div>
   <div id="history"></div>
 </div>
 
+<!-- SETTINGS -->
 <div id="settingsBtn" onclick="openSettings()">⚙</div>
 
 <div id="settings">
   <div id="settingsBox">
     <h3>Settings ⚡</h3>
 
-    <div class="settings-item">
-      <label><input type="checkbox" id="useLambo" class="toggle" checked> Lambo AI</label>
+    <div class="setting">
+      <label><input id="useLambo" type="checkbox" class="toggle" checked> Lambo AI</label>
     </div>
-    <div class="settings-item">
-      <label><input type="checkbox" id="useGoogle" class="toggle" checked> Google Search</label>
+    <div class="setting">
+      <label><input id="useGoogle" type="checkbox" class="toggle" checked> Google (CSE)</label>
     </div>
-    <div class="settings-item">
-      <label><input type="checkbox" id="bingBg" class="toggle"> Daily Bing wallpaper 🌄</label>
-    </div>
-
-    <div class="settings-item">
-      <input id="apiKey" placeholder="Gemini API key">
-      <small>
-        Get it from
-        <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a>
-      </small>
+    <div class="setting">
+      <label><input id="bingBg" type="checkbox" class="toggle"> Daily Bing wallpaper 🌄</label>
     </div>
 
-    <button onclick="resetSettings()">Reset defaults</button>
+    <div class="setting">
+      <input id="apiKey" placeholder="Gemini API key" />
+      <small>Get it from <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a></small>
+    </div>
+
+    <div class="setting">
+      <input id="newShortcut" placeholder="Add shortcut (example.com)" />
+      <button onclick="addShortcut()">Add Shortcut</button>
+    </div>
+
+    <button onclick="resetAll()">Reset all</button>
     <button onclick="clearHistory()">Clear history</button>
     <button onclick="closeSettings()">Close</button>
   </div>
 </div>
 
 <script>
-const answers = document.getElementById("answers");
-const title = document.getElementById("title");
-const historyBox = document.getElementById("history");
-const googleBox = document.getElementById("googleBox");
+const title=document.getElementById("title");
+const ans=document.getElementById("lamboAnswer");
+const googleBox=document.getElementById("googleBox");
+const shortcutsBox=document.getElementById("shortcuts");
 
-function saveSettings(){
-  localStorage.setItem("lambo_settings",JSON.stringify({
-    lambo:useLambo.checked,
-    google:useGoogle.checked,
-    bing:bingBg.checked,
-    key:apiKey.value
+function isUrl(t){return /^https?:\/\//i.test(t)||(t.includes(".")&&!t.includes(" "))}
+
+/* ===== SHORTCUTS ===== */
+function renderShortcuts(){
+  const s=JSON.parse(localStorage.getItem("shortcuts")||"[]");
+  shortcutsBox.innerHTML=s.map(u=>`<div class="shortcut" onclick="openShortcut('${u}')">${u}</div>`).join("");
+}
+function addShortcut(){
+  const v=newShortcut.value.trim();
+  if(!v) return;
+  const s=JSON.parse(localStorage.getItem("shortcuts")||"[]");
+  s.push(v);
+  localStorage.setItem("shortcuts",JSON.stringify(s));
+  newShortcut.value="";
+  renderShortcuts();
+}
+function openShortcut(u){
+  location.href=u.startsWith("http")?u:"https://"+u;
+}
+
+/* ===== HISTORY ===== */
+function addHistory(q){
+  let h=JSON.parse(localStorage.getItem("history")||"[]");
+  h.unshift(q); h=h.slice(0,10);
+  localStorage.setItem("history",JSON.stringify(h));
+  renderHistory();
+}
+function renderHistory(){
+  const h=JSON.parse(localStorage.getItem("history")||"[]");
+  history.innerHTML=h.map(x=>`<div onclick="reuse('${x.replace(/'/g,"")}')">${x}</div>`).join("");
+}
+function reuse(q){query.value=q;run()}
+
+/* ===== MAIN ===== */
+async function run(){
+  const q=query.value.trim();
+  if(!q) return;
+
+  if(isUrl(q)){location.href=q.startsWith("http")?q:"https://"+q;return}
+
+  addHistory(q);
+
+  googleBox.classList.toggle("hidden",!useGoogle.checked);
+
+  if(useLambo.checked){
+    title.classList.add("thinking");
+    ans.textContent="thinking fr… 🧠✨";
+
+    try{
+      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey.value}`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          contents:[{
+            parts:[{text:`You are Lambo 🐱, a Gen Z friendly AI cat built by Montry for the Nothing app. Be playful, helpful, casual.\nUser: ${q}`}]
+          }]
+        })
+      });
+      const d=await r.json();
+      ans.textContent=d.candidates?.[0]?.content?.parts?.[0]?.text||"nah something broke 💀";
+    }catch{
+      ans.textContent="API error 💀";
+    }
+    title.classList.remove("thinking");
+  }
+}
+
+/* ===== BING WALLPAPER (FIXED) ===== */
+async function loadBing(){
+  try{
+    const r=await fetch("https://api.allorigins.win/raw?url=https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1");
+    const j=await r.json();
+    document.body.style.backgroundImage="url(https://www.bing.com"+j.images[0].url+")";
+  }catch{}
+}
+
+/* ===== SETTINGS ===== */
+bingBg.onchange=()=>bingBg.checked?loadBing():document.body.style.backgroundImage="";
+useGoogle.onchange=()=>googleBox.classList.toggle("hidden",!useGoogle.checked);
+
+function openSettings(){settings.style.display="flex"}
+function closeSettings(){save();settings.style.display="none"}
+
+function save(){
+  localStorage.setItem("settings",JSON.stringify({
+    l:useLambo.checked,
+    g:useGoogle.checked,
+    b:bingBg.checked,
+    k:apiKey.value
   }));
 }
 
-function loadSettings(){
-  const s = JSON.parse(localStorage.getItem("lambo_settings")||"{}");
-  useLambo.checked = s.lambo ?? true;
-  useGoogle.checked = s.google ?? true;
-  bingBg.checked = s.bing ?? false;
-  apiKey.value = s.key || "";
+function load(){
+  const s=JSON.parse(localStorage.getItem("settings")||"{}");
+  useLambo.checked=s.l??true;
+  useGoogle.checked=s.g??true;
+  bingBg.checked=s.b??false;
+  apiKey.value=s.k||"";
   googleBox.classList.toggle("hidden",!useGoogle.checked);
   if(bingBg.checked) loadBing();
 }
 
-function openSettings(){settings.style.display="flex"}
-function closeSettings(){saveSettings();settings.style.display="none"}
+function resetAll(){localStorage.clear();location.reload()}
+function clearHistory(){localStorage.removeItem("history");renderHistory()}
 
-function resetSettings(){
-  localStorage.removeItem("lambo_settings");
-  loadSettings();
-}
-
-function clearHistory(){
-  localStorage.removeItem("lambo_history");
-  historyBox.innerHTML="";
-}
-
-function addHistory(q){
-  const h = JSON.parse(localStorage.getItem("lambo_history")||"[]");
-  h.unshift(q);
-  localStorage.setItem("lambo_history",JSON.stringify(h.slice(0,10)));
-  renderHistory();
-}
-
-function renderHistory(){
-  const h = JSON.parse(localStorage.getItem("lambo_history")||"[]");
-  historyBox.innerHTML = h.map(x=>`<div onclick="reuse('${x.replace(/'/g,"")}')">${x}</div>`).join("");
-}
-
-function reuse(q){
-  query.value=q;
-  run();
-}
-
-function isUrl(t){
-  return /^https?:\/\//i.test(t) || (t.includes(".") && !t.includes(" "));
-}
-
-async function run(){
-  const q = query.value.trim();
-  if(!q) return;
-
-  if(isUrl(q)){
-    location.href = q.startsWith("http")?q:"https://"+q;
-    return;
-  }
-
-  addHistory(q);
-
-  if(useLambo.checked){
-    title.classList.add("thinking");
-    answers.textContent="Lambo thinking fr… 🧠✨";
-
-    if(/nothing app/i.test(q)){
-      answers.textContent=`Nothing has never been this fun 😎
-
-This app starts with one simple word: Nothing.
-But when you go back… it grows 👀
-
-No stress, just vibes ✨`;
-      title.classList.remove("thinking");
-      return;
-    }
-
-    const key = apiKey.value;
-    if(!key){
-      answers.textContent="drop your API key first bestie 🗝️";
-      title.classList.remove("thinking");
-      return;
-    }
-
-    try{
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${key}`,
-        {
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({
-            contents:[{parts:[{text:
-              `You are Lambo 🐱, a Gen Z friendly AI cat built by Montry for the Nothing app. Be chill, helpful, fun.\nUser: ${q}`
-            }]}]
-          })
-        }
-      );
-      const data = await res.json();
-      answers.textContent = data.candidates?.[0]?.content?.parts?.[0]?.text || "bruh something broke 💀";
-    }catch{
-      answers.textContent="error moment 💀 try again";
-    }
-    title.classList.remove("thinking");
-  }
-
-  googleBox.classList.toggle("hidden",!useGoogle.checked);
-}
-
-function openGoogle(){
-  window.open("https://www.google.com/search?q="+encodeURIComponent(query.value));
-}
-
-/* Bing daily wallpaper */
-async function loadBing(){
-  try{
-    const r = await fetch("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1");
-    const j = await r.json();
-    document.body.style.backgroundImage =
-      "url(https://www.bing.com"+j.images[0].url+")";
-  }catch{}
-}
-
-useGoogle.onchange=()=>googleBox.classList.toggle("hidden",!useGoogle.checked);
-bingBg.onchange=()=>bingBg.checked?loadBing():document.body.style.backgroundImage="";
-
-loadSettings();
+load();
 renderHistory();
+renderShortcuts();
 </script>
 
 </body>
