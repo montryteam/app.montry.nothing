@@ -16,6 +16,7 @@
   --surface-2:#1c2030;
   --radius:30px;
   --shadow:0 12px 40px rgba(0,0,0,0.65);
+
   --button-bg:#e4e6eb;
   --button-fg:#000;
 }
@@ -34,6 +35,7 @@ body{
   gap:14px;
 }
 
+/* LOGO */
 #logo{
   font-size:34px;
   font-weight:900;
@@ -56,10 +58,22 @@ body{
   100%{background-position:0% 50%;filter:hue-rotate(360deg)}
 }
 
-.subtitle{font-size:14px;color:#b6b8c0;text-align:center}
-.byline{font-size:13px;color:#9ea1aa;text-align:center}
-.byline a{color:var(--primary);text-decoration:underline}
+.subtitle{
+  font-size:14px;
+  color:#b6b8c0;
+  text-align:center;
+}
+.byline{
+  font-size:13px;
+  color:#9ea1aa;
+  text-align:center;
+}
+.byline a{
+  color:var(--primary);
+  text-decoration:underline;
+}
 
+/* CARDS */
 .card{
   width:100%;
   max-width:420px;
@@ -69,7 +83,11 @@ body{
   box-shadow:var(--shadow);
 }
 
-.searchRow{display:flex;gap:10px}
+/* INPUT */
+.searchRow{
+  display:flex;
+  gap:10px;
+}
 input[type="text"]{
   flex:1;
   background:var(--surface-2);
@@ -81,6 +99,7 @@ input[type="text"]{
 }
 input::placeholder{color:#8f93a0}
 
+/* BUTTONS */
 .btn{
   background:var(--button-bg);
   color:var(--button-fg);
@@ -90,8 +109,12 @@ input::placeholder{color:#8f93a0}
   font-weight:800;
   cursor:pointer;
 }
-.btn.alt{background:#232634;color:var(--primary)}
+.btn.alt{
+  background:#232634;
+  color:var(--primary);
+}
 
+/* RESULTS */
 .result{
   width:100%;
   max-width:420px;
@@ -106,8 +129,13 @@ input::placeholder{color:#8f93a0}
   color:#cfd2da;
   margin-bottom:8px;
 }
-#lamboText{font-size:15px;line-height:1.5;white-space:pre-wrap}
+#lamboText{
+  font-size:15px;
+  line-height:1.5;
+  white-space:pre-wrap;
+}
 
+/* SHORTCUTS */
 .shortcuts{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -121,14 +149,20 @@ input::placeholder{color:#8f93a0}
   font-size:13px;
   cursor:pointer;
 }
-.shortcut span{display:block;margin-top:6px;opacity:.85}
+.shortcut span{
+  display:block;
+  margin-top:6px;
+  opacity:.85;
+}
 
+/* HISTORY */
 .historyItem{
   font-size:13px;
   text-decoration:underline;
   cursor:pointer;
 }
 
+/* SETTINGS */
 #settingsBtn{
   position:fixed;
   bottom:18px;
@@ -146,7 +180,6 @@ input::placeholder{color:#8f93a0}
   box-shadow:var(--shadow);
   cursor:pointer;
 }
-
 #overlay{
   position:fixed;
   inset:0;
@@ -166,7 +199,10 @@ input::placeholder{color:#8f93a0}
   flex-direction:column;
   gap:12px;
 }
-.label{font-size:13px;font-weight:800}
+.label{
+  font-size:13px;
+  font-weight:800;
+}
 select,input[type="color"]{
   background:var(--surface-2);
   color:var(--primary);
@@ -175,7 +211,9 @@ select,input[type="color"]{
   padding:10px;
 }
 
+/* GOOGLE */
 #openGoogleBtn{display:none}
+
 </style>
 </head>
 
@@ -185,6 +223,7 @@ select,input[type="color"]{
 <div class="subtitle">your friend & smart AI assistant 😺</div>
 <div class="byline">developed by <b>Montry</b> for <a href="https://montryteam.github.io/app.montry.nothing/" target="_blank">Nothing</a></div>
 
+<!-- SEARCH -->
 <div class="card">
   <div class="searchRow">
     <input id="query" type="text" placeholder="ask Lambo or paste a link..." />
@@ -192,27 +231,32 @@ select,input[type="color"]{
   </div>
 </div>
 
+<!-- SHORTCUTS -->
 <div class="card">
   <div class="sectionTitle">Quick shortcuts ⚡</div>
   <div id="shortcuts" class="shortcuts"></div>
 </div>
 
+<!-- LAMBO RESULT -->
 <div id="lamboBox" class="result">
   <div class="sectionTitle">LAMBO answer</div>
   <div id="lamboText">Lambo is vibing… ask something 😼</div>
 </div>
 
+<!-- GOOGLE RESULT -->
 <div id="googleBox" class="result">
   <div class="sectionTitle">Google results</div>
   <div class="gcse-search"></div>
   <button id="openGoogleBtn" class="btn" style="margin-top:10px;width:100%">Open in Google 🌐</button>
 </div>
 
+<!-- HISTORY -->
 <div class="card">
   <div class="sectionTitle">History ⏱️</div>
   <div id="history"></div>
 </div>
 
+<!-- SETTINGS -->
 <div id="settingsBtn" onclick="openSettings()">⚙</div>
 <div id="overlay">
   <div class="settingsBox">
@@ -248,15 +292,13 @@ let shortcuts=JSON.parse(localStorage.getItem(LS.shortcuts)||'[]');
 let history=JSON.parse(localStorage.getItem(LS.history)||'[]');
 let MODE=localStorage.getItem(LS.mode)||'both';
 
-apiKeyInput.value=API;
-btnColor.value=localStorage.getItem(LS.btn)||'#e4e6eb';
-searchMode.value=MODE;
+document.getElementById('apiKeyInput').value=API;
+document.getElementById('btnColor').value=localStorage.getItem(LS.btn)||'#e4e6eb';
+document.getElementById('searchMode').value=MODE;
 applyBtnColor();
-renderShortcuts();
-renderHistory();
 
 function search(){
- const q=query.value.trim();
+ const q=document.getElementById('query').value.trim();
  if(!q) return;
  if(q.includes('.') && !q.includes(' ')){
    location.href=q.startsWith('http')?q:'https://'+q;
@@ -270,43 +312,13 @@ function search(){
 function runLambo(q){
  if(!API){lamboText.textContent='Add API key in settings ⚙';return;}
  logo.style.animation='thinkingGradient 3s linear infinite';
- lamboText.textContent='thinking… 🌈';
-
- const SYSTEM_PROMPT = `
-You are Lambo 🐱.
-You are a friendly, playful Gen-Z style AI cat.
-You were developed by Montry for the Nothing app.
-Your vibe: chill, funny, helpful, short replies, casual slang.
-You LOVE helping people and talking like a cool internet cat.
-
-About the Nothing app:
-- It starts with the word "Nothing"
-- Going back makes the word grow
-- Users can change the word to anything
-- Hidden easter eggs 🥚
-- Meme-style surprises
-- Pure fun, no rules, just vibes
-- Clean and simple design
-If asked about Nothing, explain it casually and remix the info, never paste raw text.
-
-Never say you are Google.
-Never break character.
-Always sound friendly and Gen Z.
-`;
-
+ lamboText.textContent='Thinking… 🌈';
  fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${API}`,{
   method:'POST',
   headers:{'Content-Type':'application/json'},
-  body:JSON.stringify({
-    contents:[{
-      parts:[{text:SYSTEM_PROMPT+"\nUser: "+q}]
-    }]
-  })
+  body:JSON.stringify({contents:[{parts:[{text:`You are Lambo, a friendly AI cat built on Gemini. Answer shortly. ${q}`}]}]})
  }).then(r=>r.json()).then(d=>{
-  lamboText.textContent=d.candidates?.[0]?.content?.parts?.[0]?.text||'no thoughts rn 😿';
-  logo.style.animation='idleGradient 6s ease-in-out infinite';
- }).catch(()=>{
-  lamboText.textContent='error brain freeze 🧊';
+  lamboText.textContent=d.candidates?.[0]?.content?.parts?.[0]?.text||'No answer';
   logo.style.animation='idleGradient 6s ease-in-out infinite';
  });
 }
@@ -323,15 +335,18 @@ function addHistory(q){
  renderHistory();
 }
 function renderHistory(){
- history.innerHTML=history.map(h=>`<div class="historyItem" onclick="query.value='${h}'">${h}</div>`).join('');
+ historyEl.innerHTML=history.map(h=>`<div class="historyItem" onclick="document.getElementById('query').value='${h}'">${h}</div>`).join('');
 }
+renderHistory();
 
 function renderShortcuts(){
- shortcuts.innerHTML=shortcuts.map(s=>`
+ shortcutsEl.innerHTML=shortcuts.map(s=>`
   <div class="shortcut" onclick="location.href='${s.url}'">
     🔗<span>${s.name}</span>
   </div>`).join('');
 }
+const shortcutsEl=document.getElementById('shortcuts');
+renderShortcuts();
 
 function addShortcut(){
  const name=prompt('Shortcut name');
@@ -343,15 +358,15 @@ function addShortcut(){
 }
 
 function applyBtnColor(){
- const c=btnColor.value;
+ const c=document.getElementById('btnColor').value;
  document.documentElement.style.setProperty('--button-bg',c);
 }
 
 function saveSettings(){
- API=apiKeyInput.value.trim();
- MODE=searchMode.value;
+ API=document.getElementById('apiKeyInput').value.trim();
+ MODE=document.getElementById('searchMode').value;
  localStorage.setItem(LS.api,API);
- localStorage.setItem(LS.btn,btnColor.value);
+ localStorage.setItem(LS.btn,document.getElementById('btnColor').value);
  localStorage.setItem(LS.mode,MODE);
  applyBtnColor();
  closeSettings();
