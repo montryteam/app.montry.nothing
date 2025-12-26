@@ -1,1 +1,238 @@
+:root {
+  --bg: #0f1115;
+  --fg: #e4e6eb;
+  --surface: #111;
+  --radius: 26px;
+  --shadow: 0 12px 36px rgba(0,0,0,0.6);
+  --button-bg: #ffffff;
+  --button-fg: #000000;
+}
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: Inter, system-ui, Arial, sans-serif;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 34px;
+  line-height: 1;
+  text-align: center;
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(90deg, #6a00ff, #009dff);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: logoIdle 6s ease-in-out infinite;
+  border-radius: 20px;
+  padding: 6px 0;
+}
+
+@keyframes logoIdle {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes logoThink {
+  0% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+  50% { background-position: 100% 50%; filter: hue-rotate(180deg); }
+  100% { background-position: 0% 50%; filter: hue-rotate(360deg); }
+}
+
+.subtitle {
+  color: #bfbfbf;
+  font-size: 14px;
+  text-align: center;
+  max-width: 420px;
+}
+
+.byline {
+  color: #a8a8a8;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+input[type="text"] {
+  flex: 1;
+  background: #0b0b0b;
+  color: var(--fg);
+  border-radius: 28px;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.03);
+  font-size: 15px;
+}
+
+button.btn {
+  background: var(--button-bg);
+  color: var(--button-fg);
+  padding: 12px 14px;
+  border-radius: 28px;
+  border: 0;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.result {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 12px;
+  box-shadow: var(--shadow);
+  min-height: 110px;
+  overflow: auto;
+  display: block;
+}
+
+.sectionTitle {
+  color: #dcdcdc;
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lamboText {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #eaeaea;
+  white-space: pre-wrap;
+}
+
+.googleResultsContainer {
+  margin-top: 8px;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.historyItem {
+  color: var(--fg);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+  opacity: 0.95;
+}
+
+.settingsFloat {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: var(--button-bg);
+  color: var(--button-fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  cursor: pointer;
+  z-index: 60;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 70;
+}
+
+.settingsBox {
+  width: 92%;
+  max-width: 420px;
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  font-size: 13px;
+  color: #cfcfcf;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.controlRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+select, input[type="color"] {
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  background: #0a0a0a;
+  color: #fff;
+}
+
+.muted { color: #a7a7a7; font-size: 13px; }
+
+.typingCursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background: #fff;
+  margin-left: 6px;
+  opacity: 0.9;
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (max-width:420px){
+  .logo { font-size: 28px; }
+  .subtitle { font-size: 13px; }
+}
